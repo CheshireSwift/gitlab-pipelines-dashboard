@@ -1,0 +1,21 @@
+h1,
+h2,
+button,
+div {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+  margin: 0;
+  color: var(--blue);
+}
+
+h2 {
+  margin: 0;
+  color: var(--white);
+}
+
+a {
+  color: var(--white);
+  text-decoration: none;
+}

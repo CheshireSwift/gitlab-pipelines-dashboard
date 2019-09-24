@@ -1,0 +1,17 @@
+button,
+input {
+  background: none;
+  border-radius: 0.5rem;
+  color: var(--blue);
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+input {
+  border: 1px solid var(--blue);
+}
+
+button {
+  border: none;
+  box-shadow: 1px 1px 3px;
+}
