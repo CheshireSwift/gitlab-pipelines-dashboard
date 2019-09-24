@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "target": "es2017",
+    "moduleResolution": "node",
+    "strict": true
+  },
+  "include": ["."]
+}

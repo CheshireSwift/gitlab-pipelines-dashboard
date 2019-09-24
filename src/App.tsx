@@ -1,21 +1,25 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-
+import { ApiContext, useGitLabApiFetch } from './api'
+import { storageKeys, useLocalStorage } from './localStorage'
 import Menu from './Menu'
-import {
-  useGitLabApiFetch,
-  useGitLabApiData,
-  GitLabProject,
-  ApiContext,
-} from './api'
-import { useLocalStorage, storageKeys } from './localStorage'
 import Projects from './Projects'
+
+declare var io: () => SocketIO.Socket
 
 export const App = () => {
   const apiFetch = useGitLabApiFetch()
   const [showMenu, setShowMenu] = React.useState(false)
   const [maybeFilter, setFilter] = useLocalStorage(storageKeys.filter)
   const filter = maybeFilter || ''
+
+  React.useEffect(() => {
+    const socket = io()
+
+    socket.on('test', (msg: string) => {
+      alert(msg)
+    })
+  }, [])
 
   const menuButton = (
     <>
