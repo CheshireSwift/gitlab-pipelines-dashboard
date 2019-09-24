@@ -16,8 +16,8 @@ export const App = () => {
   React.useEffect(() => {
     const socket = io()
 
-    socket.on('test', (msg: string) => {
-      alert(msg)
+    socket.on('pipeline', (pipeline: PipelineEvent) => {
+      console.log(pipeline)
     })
   }, [])
 
