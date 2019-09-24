@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 import {
   GitLabProject,
   useGitLabApiData,
@@ -9,19 +10,49 @@ import LoadingSpinner from './LoadingSpinner'
 
 function colorForStatus(status: GitLabPipeline['status']) {
   switch (status) {
+    case 'canceled':
+    case 'skipped':
+      return 'blue'
     case 'success':
       return 'green'
     case 'failed':
       return 'red'
-    case 'skipped':
-      return 'blue'
     case 'running':
       return 'yellow'
-    case 'canceled':
+    case 'pending':
       return 'orange'
     case 'skipped':
       return 'white'
   }
+}
+
+const TimeDisplay = ({
+  pipelineDetails,
+}: {
+  pipelineDetails: GitLabPipelineDetails
+}) => {
+  const startMoment =
+    pipelineDetails.started_at && moment(pipelineDetails.started_at)
+  const endMoment =
+    pipelineDetails.finished_at && moment(pipelineDetails.finished_at)
+  return (
+    <>
+      {endMoment ? (
+        <>
+          {startMoment && (
+            <div>
+              Ran in {moment.duration(endMoment.diff(startMoment)).humanize()}
+            </div>
+          )}
+          <div>Finished {endMoment.fromNow()}</div>
+        </>
+      ) : (
+        pipelineDetails.started_at && (
+          <div>{moment(pipelineDetails.started_at).fromNow()}</div>
+        )
+      )}
+    </>
+  )
 }
 
 const PipelineTile = ({
@@ -35,24 +66,26 @@ const PipelineTile = ({
     `projects/${projectId}/pipelines/${pipeline.id}`,
   )
 
-  console.log(details)
-
   return (
     <a key={pipeline.id} href={pipeline.web_url} target="__blank">
       <div
         style={{
           margin: '1rem',
           padding: '1.5rem',
-          width: '8rem',
+          width: '10rem',
           border: `0.25rem solid var(--${colorForStatus(pipeline.status)})`,
           boxShadow: `0 0 2rem var(--${colorForStatus(pipeline.status)})`,
           borderRadius: '1rem',
         }}
       >
         <div>
+          <span style={{ fontWeight: 'bold' }}>{pipeline.ref}</span> (
+          {pipeline.sha.substring(0, 6)}){' '}
+        </div>
+        <div>
           {details ? (
             <>
-              <div style={{ marginBottom: '0.5rem' }}>
+              <div style={{ margin: '0.5rem 0' }}>
                 <img
                   style={{
                     width: '2rem',
@@ -65,13 +98,11 @@ const PipelineTile = ({
                 />
                 {details.user.name}
               </div>
+              <TimeDisplay pipelineDetails={details} />
             </>
           ) : (
             <LoadingSpinner />
           )}
-        </div>
-        <div>
-          {pipeline.ref} ({pipeline.sha.substring(0, 6)}){' '}
         </div>
         <div style={{ fontWeight: 'bold' }}>{pipeline.status}</div>
       </div>

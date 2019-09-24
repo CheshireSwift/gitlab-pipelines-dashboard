@@ -50,27 +50,27 @@ export interface GitLabPipeline {
 }
 
 export interface GitLabPipelineDetails {
-  "id": 46,
-  "status": PipelineStatus
-  "ref": string
-  "sha": string
-  "before_sha": string
-  "tag": boolean,
-  "user": {
-    "name": string
-    "username": string
-    "id": number,
-    "avatar_url": string
-    "web_url": string
+  id: number,
+  status: PipelineStatus
+  ref: string
+  sha: string
+  before_sha: string
+  tag: boolean,
+  user: {
+    name: string
+    username: string
+    id: number,
+    avatar_url: string
+    web_url: string
   },
-  "created_at": string | null
-  "updated_at": string | null
-  "started_at": string | null
-  "finished_at": string | null
-  "committed_at": string | null
-  "duration": number | null,
-  "coverage": string
-  "web_url": string
+  created_at: string | null
+  updated_at: string | null
+  started_at: string | null
+  finished_at: string | null
+  committed_at: string | null
+  duration: number | null,
+  coverage: string
+  web_url: string
 }
 
 const pathJoin = (...segments: string[]) => segments.join('/').replace(/\/+/, '/')
