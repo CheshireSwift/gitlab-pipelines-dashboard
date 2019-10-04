@@ -1,10 +1,10 @@
-import React from 'react'
 import moment from 'moment'
+import React from 'react'
 import {
-  GitLabProject,
-  useGitLabApiData,
   GitLabPipeline,
   GitLabPipelineDetails,
+  GitLabProject,
+  useGitLabApiData,
 } from './api'
 import LoadingSpinner from './LoadingSpinner'
 
@@ -72,7 +72,7 @@ const PipelineTile = ({
         style={{
           margin: '1rem',
           padding: '1.5rem',
-          width: '10rem',
+          width: '12rem',
           border: `0.25rem solid var(--${colorForStatus(pipeline.status)})`,
           boxShadow: `0 0 2rem var(--${colorForStatus(pipeline.status)})`,
           borderRadius: '1rem',
@@ -121,8 +121,14 @@ const ProjectPipelines = ({ projectId }: { projectId: number }) => {
   }
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-      {pipelines.map(pipeline => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '1rem',
+      }}
+    >
+      {pipelines.map((pipeline) => (
         <PipelineTile
           key={pipeline.id}
           projectId={projectId}
@@ -143,11 +149,17 @@ export const Projects = ({ filter }: { filter: string }) => {
     )
   }
 
+  const filterElements = filter.toLowerCase().split(',')
+  const projectMatchesFilter = (project: GitLabProject) =>
+    [project.namespace.name, project.path, project.path_with_namespace]
+      .map((field) => field.toLowerCase())
+      .some((field) => filterElements.includes(field))
+
   const projects = projectsData.filter(
-    project =>
+    (project) =>
       !project.archived &&
       project.jobs_enabled &&
-      project.path_with_namespace.toLowerCase().includes(filter.toLowerCase()),
+      projectMatchesFilter(project),
   )
 
   const groupedProjects = projects.reduce<{
@@ -165,16 +177,36 @@ export const Projects = ({ filter }: { filter: string }) => {
 
   return (
     <>
-      {Object.keys(groupedProjects).map(namespace => (
-        <div key={namespace}>
-          <h1>{namespace}</h1>
-          {groupedProjects[namespace].map(project => (
-            <div key={project.id}>
-              <h2>{project.path_with_namespace}</h2>
-              <ProjectPipelines projectId={project.id} />
-            </div>
-          ))}
-        </div>
+      <style>
+        {`
+      .hide-scrollbar {
+        scrollbar-width: none;
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      `}
+      </style>
+      {Object.keys(groupedProjects).map((namespace) => (
+        <>
+          <h1 key={namespace + 'h'}>{namespace}</h1>
+          <div
+            key={namespace}
+            style={{ display: 'flex', flexDirection: 'row', height: '100%' }}
+          >
+            {groupedProjects[namespace].map((project) => (
+              <div key={project.id} style={{ height: '100%' }}>
+                <h2>{project.path_with_namespace}</h2>
+                <div
+                  className="hide-scrollbar"
+                  style={{ overflowY: 'scroll', height: 'calc(100% - 2rem)' }}
+                >
+                  <ProjectPipelines projectId={project.id} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       ))}
     </>
   )

@@ -46,7 +46,13 @@ export const App = () => {
 
   return (
     <ApiContext.Provider value={apiFetch}>
-      <div style={{ position: 'relative' }}>
+      <div
+        style={{
+          position: 'relative',
+          height: 'calc(99vh - 4rem)',
+          margin: '2rem 2rem 0',
+        }}
+      >
         <Projects filter={filter} />
         {menuButton}
       </div>
