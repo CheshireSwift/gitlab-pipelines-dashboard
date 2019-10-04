@@ -110,31 +110,71 @@ const PipelineTile = ({
   )
 }
 
-const ProjectPipelines = ({ projectId }: { projectId: number }) => {
+const ProjectPipelines = ({
+  projectId,
+  title,
+}: {
+  projectId: number
+  title: string
+}) => {
   const pipelines = useGitLabApiData<GitLabPipeline[]>(
     `projects/${projectId}/pipelines`,
     1,
   )
 
   if (!pipelines) {
-    return <LoadingSpinner />
+    return (
+      <div style={{ height: '100%' }}>
+        <h2>{title}</h2>
+        <LoadingSpinner />
+      </div>
+    )
   }
 
+  if (!pipelines.length) {
+    return (
+      <div style={{ height: '100%' }}>
+        <h2>{title}</h2>
+        No pipelines run
+      </div>
+    )
+  }
+
+  const mostRecentRun = pipelines[0]
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '1rem',
-      }}
-    >
-      {pipelines.map((pipeline) => (
-        <PipelineTile
-          key={pipeline.id}
-          projectId={projectId}
-          pipeline={pipeline}
-        />
-      ))}
+    <div style={{ height: '100%' }}>
+      <h2
+        style={{
+          textShadow: `0 0 1rem var(--${colorForStatus(mostRecentRun.status)})`,
+          color:
+            mostRecentRun.status === 'failed'
+              ? `var(--${colorForStatus(mostRecentRun.status)})`
+              : undefined,
+        }}
+      >
+        {title}
+      </h2>
+      <div
+        className="hide-scrollbar"
+        style={{ overflowY: 'scroll', height: 'calc(100% - 2rem)' }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '1rem',
+          }}
+        >
+          {pipelines.map((pipeline) => (
+            <PipelineTile
+              key={pipeline.id}
+              projectId={projectId}
+              pipeline={pipeline}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
@@ -199,15 +239,10 @@ export const Projects = ({ filter }: { filter: string }) => {
                 a.path_with_namespace.localeCompare(b.path_with_namespace),
               )
               .map((project) => (
-                <div key={project.id} style={{ height: '100%' }}>
-                  <h2>{project.path_with_namespace}</h2>
-                  <div
-                    className="hide-scrollbar"
-                    style={{ overflowY: 'scroll', height: 'calc(100% - 2rem)' }}
-                  >
-                    <ProjectPipelines projectId={project.id} />
-                  </div>
-                </div>
+                <ProjectPipelines
+                  projectId={project.id}
+                  title={project.path_with_namespace}
+                />
               ))}
           </div>
         </>
