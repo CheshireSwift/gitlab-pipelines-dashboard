@@ -194,17 +194,21 @@ export const Projects = ({ filter }: { filter: string }) => {
             key={namespace}
             style={{ display: 'flex', flexDirection: 'row', height: '100%' }}
           >
-            {groupedProjects[namespace].map((project) => (
-              <div key={project.id} style={{ height: '100%' }}>
-                <h2>{project.path_with_namespace}</h2>
-                <div
-                  className="hide-scrollbar"
-                  style={{ overflowY: 'scroll', height: 'calc(100% - 2rem)' }}
-                >
-                  <ProjectPipelines projectId={project.id} />
+            {groupedProjects[namespace]
+              .sort((a, b) =>
+                a.path_with_namespace.localeCompare(b.path_with_namespace),
+              )
+              .map((project) => (
+                <div key={project.id} style={{ height: '100%' }}>
+                  <h2>{project.path_with_namespace}</h2>
+                  <div
+                    className="hide-scrollbar"
+                    style={{ overflowY: 'scroll', height: 'calc(100% - 2rem)' }}
+                  >
+                    <ProjectPipelines projectId={project.id} />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </>
       ))}
