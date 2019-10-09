@@ -232,7 +232,12 @@ export const Projects = ({ filter }: { filter: string }) => {
           <h1 key={namespace + 'h'}>{namespace}</h1>
           <div
             key={namespace}
-            style={{ display: 'flex', flexDirection: 'row', height: '100%' }}
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              height: '100%',
+              justifyContent: 'center',
+            }}
           >
             {groupedProjects[namespace]
               .sort((a, b) =>
